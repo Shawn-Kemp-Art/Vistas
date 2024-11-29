@@ -36,7 +36,7 @@ definitions = [
         id: "layers",
         name: "Layers",
         type: "number",
-        default: 12,
+        default: 16,
         options: {
             min: 6,
             max: 24,
