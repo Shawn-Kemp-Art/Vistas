@@ -89,41 +89,6 @@ definitions = [
         options: {options: ["Random","White","Mocha"]},
     }, 
     {
-        id: "type",
-        name: "Type",
-        type: "select",
-        options: {options: ["Squiggle","Wave"]},
-    },
-    {
-        id: "nwaves",
-        name: "Number of squiggles",
-        type: "number",
-        default: 2,
-        options: {
-            min: 1,
-            max: 3,
-            step: 1,
-        },  
-    },
-    {
-        id: "frametype",
-        name: "Frame Type",
-        type: "select",
-        options: {options: ["Circle","Square"]},
-    },
-    {
-        id: "center",
-        name: "Center",
-        type: "number",
-        default: 400,
-        options: {
-            min: 1,
-            max: 1000,
-            step: 10,
-        },  
-    },
-    
-    {
         id: "matwidth",
         name: "Mat size",
         type: "number",
@@ -199,13 +164,6 @@ var orientation="Portrait";
 if ($fx.getParam('orientation')=="landscape"){wide = h;high = w;orientation="Landscape";};
 if ($fx.getParam('orientation')=="portrait"){wide = w;high = h;orientation="Portrait";};
 
-//setup the project variables
-if ($fx.getParam('type')== "Squiggle"){var type = 1};
-if ($fx.getParam('type')== "Wave"){var type = 0};
-
-if ($fx.getParam('frametype')== "Circle"){var frameType = 1};
-if ($fx.getParam('frametype')== "Square"){var frameType = 0};
-
 //Set the line color
 linecolor={"Hex":"#4C4638", "Name":"Mocha"};
 
@@ -214,48 +172,162 @@ linecolor={"Hex":"#4C4638", "Name":"Mocha"};
 
 
 sheet = []; //This will hold each layer
-var px=0;var py=0;var pz=0;var prange=.1; 
-var center = new Point(wide/2,high/2)
-var longestDim = wide;if (wide<high){longestDim=high;}
+
+//project setup
+var orbCenter = new Point(Math.floor(framewidth*2+R.random_dec()*(wide-framewidth*4)),Math.floor(framewidth*2+R.random_dec()*(high/2-framewidth*4)))
+var orbSize = Math.floor(R.random_dec()*wide/4+50)
+var horizonLine = Math.floor(high/3+(high/3)*R.random_dec());
+
+var layerLines = [];
+for (l=0;l<stacks+1;l++){
+    layerLines[l]=Math.floor(horizonLine+((high-horizonLine)/(stacks+1)*l));
+}
 
 
-//---- Draw the Layers
+
+if (R.random_dec()<.5){
+    var time='Day';
+    colors[1]={"Hex":"#035680","Name":"Blue"}
+    colors[0]= sunColors[Math.floor(R.random_dec()*sunColors.length)];
+
+    }else {
+        var time='Night';
+        colors[1]={"Hex":"#301736","Name":"Purple"}
+        colors[0]=moonColors[Math.floor(R.random_dec()*moonColors.length)];
+    }
+    console.log(time);
 
 
-var sliceLine = $fx.getParam('center');
-var gap = Math.floor(8+Math.floor(R.random_dec()*25))
-var columnWidth = Math.floor((wide-(framewidth*2+100))-(R.random_dec()*400))
-columnWidth = Math.floor((wide+100-(R.random_dec()*(wide))))
-//var type = R.random_dec()
-//var frameType = R.random_dec();
-//var nwaves = R.random_dec();
-var swaves = R.random_int(50,200);
-var rotated = R.random_dec()
+var hasTrees=Math.floor(R.random_dec()*3);
+var hasObolisks=Math.floor(R.random_dec()*3);
+var hasRays=Math.floor(R.random_dec()*2.25);
+var hasStars=Math.floor(R.random_dec()*2.25);
+var hasClouds=Math.floor(R.random_dec()*5.25);
+var hasBoats=Math.floor(R.random_dec()*2.25);
+var hasRocks=Math.floor(R.random_dec()*2.25);
+
+//Build the layers for the scene
+var scene = [];
+
+scene = landscapeTypes[Math.floor(R.random_dec()*landscapeTypes.length)];
+
+if (scene.id == 1) {
+     //Mountain range
+    sceneBack = [mountain]; 
+    sceneMid = [mountain]
+    sceneFront = [mountain]
+} 
+else if (scene.id == 2) {
+    //beach
+    sceneBack = [water]; 
+    sceneMid = [water,sand]
+    sceneFront = [sand]
+} 
+
+else if (scene.id == 3) {
+    //mesa
+    hasTrees=0
+    sceneBack = [mountain]; 
+    sceneMid = [plains,mountain]
+    sceneFront = [plains,sand]
+} 
+else if (scene.id == 4) {
+    //foothills
+    sceneBack = [hills]; 
+    sceneMid = [hills,fields]
+    sceneFront = [fields]
+} 
+else if (scene.id == 5) {
+    //open ocean
+    sceneBack = [water]; 
+    sceneMid = [water]
+    sceneFront = [water]
+} 
+else if (scene.id == 6) {
+    //River
+    sceneBack = [hills,mountain]; 
+    sceneMid = [water]
+    sceneFront = [water,hills]
+} 
+else if (scene.id == 7) {
+    //canyons
+    hasBoats=0;hasTrees=0;
+    sceneBack = [water,mountain]; 
+    sceneMid = [water,mountain]
+    sceneFront = [water,mountain,mountain]
+} 
+else{
+    //random
+    scene= landscapeTypes[0]
+    sceneBack = [mountain,hills,plains,sand,fields]; 
+    sceneMid = [mountain,hills,plains,sand,water,fields];
+    sceneFront = [mountain,hills,plains,sand,water,fields];
+}
+
+
+for (s=0;s<stacks;s++){
+scene[s] = sceneBack[Math.floor(R.random_dec()*sceneBack.length)];
+}
+for (s=stacks-11;s<stacks;s++){
+scene[s] = sceneMid[Math.floor(noise.get(s/10)*sceneMid.length)];
+}
+for (s=stacks-6;s<stacks;s++){
+scene[s] = sceneFront[Math.floor(noise.get(s/10)*sceneFront.length)];
+}
+
+if (time == 'Day'){scene[0]=sun}
+if (time == 'Night'){scene[0]=moon}
+if (hasClouds ==1){scene[2] = clouds;}
+
+// add mountainTree layers between mountains 
+for (s=2;s<stacks-1;s++){
+    if (scene[s].name == "mountain" && scene[s-2].name == "mountain" && hasTrees == 1 && R.random_dec()<.50){
+    scene[s-1]=mountainTrees;
+    }
+}
+
+// add sandRocks layers between sand
+for (s=2;s<stacks-1;s++){
+    if (scene[s].name == "sand" && scene[s-2].name == "sand" && hasRocks == 1 && R.random_dec()<.25){
+    scene[s-1]=sandRocks;
+    }
+}
+
+
+// add plainObolisks layers between plains 
+for (s=2;s<stacks-1;s++){
+    if (scene[s].name == "plains" && scene[s-2].name == "plains" && hasObolisks == 1 && R.random_dec()<.25){
+    scene[s-1]=plainObolisks;
+    }
+}
+
+// add boat layers between water 
+for (s=2;s<stacks-1;s++){
+    if (scene[s].name == "water" && scene[s-2].name == "water" && hasBoats == 1 && R.random_dec()<.25){
+    scene[s-1]=boats;
+    }
+}
+
+console.log(scene.name);
 
 
 for (z = 0; z < stacks; z++) {
-    px=0; py=0;pz=pz+prange;
+    px=0; py=0;pz=0;prange=1;
     
-
-        drawFrame(z);
+    pz=pz+prange;
     
-        if ($fx.getParam('type')== "Wave"){
-            if(z!=stacks-0 && ($fx.getParam('frametype')== "Square")){wavebase(z);waveCut(z);}
-            else if(z!=stacks-0){columnWidth=wide;wavebase(z);waveCut(z);circleFrame(z)}
+    //First we build a frame
+    var outsideframe = new Path.Rectangle(new Point(0, 0),new Size(wide, high), framradius)
+    var insideframe = new Path.Rectangle(new Point(framewidth, framewidth),new Size(wide-framewidth*2, high-framewidth*2)) 
+    sheet[z] = outsideframe.subtract(insideframe);
+    outsideframe.remove();insideframe.remove();
 
-        } else{
-            if(z!=stacks-0 && $fx.getParam('nwaves')== 2){squiggleCut(z,sliceLine); squiggleCut(z,sliceLine+swaves);}
-
-            else if(z!=stacks-0 && $fx.getParam('nwaves')== 1){squiggleCut(z,sliceLine);}
-
-            else if(z!=stacks-0 && $fx.getParam('nwaves')== 3){squiggleCut(z,sliceLine);squiggleCut(z,sliceLine+swaves);squiggleCut(z,sliceLine-swaves);}
-
-        }
-        
-        
-        
-        
-        //if (rotated<.5){sheet[z].rotate(90,new Point(wide/2,high/2))}
+    
+        if(z==0){solid(z)}
+    
+        if (z==1 && time == 'Day'){solid(z);sun(z);if(hasRays==1){rays(z)}}
+        if (z==1 && time == 'Night'){solid(z);moon(z);if(hasStars==1){stars(z)}}
+        if (z>1 && z<stacks-1){scene[z](z);}
        
         frameIt(z);// finish the layer with a final frame cleanup 
 
@@ -306,58 +378,384 @@ for (z = 0; z < stacks; z++) {
 
 //vvvvvvvvvvvvvvv PROJECT FUNCTIONS vvvvvvvvvvvvvvv 
  
-function wavebase(z){
-    start = new Point((wide/2-columnWidth/2),0) 
-    size = new Size(columnWidth, high)
-    path = new Path.Rectangle(start,size)
-    sheet[z] = sheet[z].unite(path);
+function sun(z) {
+    var sun = new Path.Circle(orbCenter, orbSize);
+    sheet[z] = sheet[z].subtract(sun);
+    sun.remove();
+    project.activeLayer.children[project.activeLayer.children.length-2].remove();    
+ }
+
+ function moon(z) {
+    var moonfull = new Path.Circle(orbCenter, orbSize);
+    var cut = new Path.Circle(orbCenter+[R.random_dec()*(orbSize/2)+framewidth,0], orbSize);
+    orb = moonfull.subtract(cut);
+    cut.remove();moonfull.remove();
+    project.activeLayer.children[project.activeLayer.children.length-1].remove();  
+    orb.rotate(R.random_dec()*90);
+    sheet[z] = sheet[z].subtract(orb); 
+    project.activeLayer.children[project.activeLayer.children.length-2].remove();  
+ }
+
+
+function stars(z){
+    for (s=0;s<R.random_dec()*65;s++){
+        center = new Point(R.random_dec()*wide, R.random_dec()*high);
+        var star = new Path.Star(center, 6, 8, 16);
+        star.rotate(R.random_dec()*90);
+        sheet[z] = sheet[z].subtract(star);
+        star.remove();
+        project.activeLayer.children[project.activeLayer.children.length-2].remove(); 
+    }
+
+}
+
+ function rays(z,zTo) {
+    if (zTo == null){zTo = z;}
+    sunradius = orbSize+20;
+    //c=new Point(wide/2,high/2);
+    rs = orbCenter + [orbSize+20,0];
+    rayRad = 360/Math.floor((R.random_dec()*30+10))
+    for (r=1;r<360;r=r+rayRad){
+        //ray = new Path.Rectangle(rs,new Size(wide,10))
+        var ray = new Path();
+        ray.add(rs+[0,-2]);
+        ray.add(rs+[noise.get(r)*wide,noise.get(r)*-30]);
+        ray.add(rs+[noise.get(r)*wide,noise.get(r)*30]);
+        ray.add(rs+[0,2]);
+        ray.rotate(r,orbCenter);
+        sheet[zTo] = sheet[zTo].subtract(ray);
+        ray.remove();
+        project.activeLayer.children[project.activeLayer.children.length-2].remove();
+        frameIt(z);
+    }
+    
+ }
+
+
+function clouds(z) {
+    for (c=0;c<wide;c=c+40){
+    var cloudCenter = new Point(c,Math.floor(R.random_dec()*100))
+    var cloudSize = Math.floor(25+R.random_dec()*100)
+    var cloud = new Path.Circle(cloudCenter, cloudSize);
+    sheet[z] = sheet[z].unite(cloud);
+    cloud.remove();
+    project.activeLayer.children[project.activeLayer.children.length-2].remove(); 
+    colors[z]= cloudColors[Math.floor(R.random_dec()*cloudColors.length)];
+ }
+ }
+
+
+ function water(z,zTo) {
+    if (zTo == null){zTo = z;}
+    start = layerLines[z];
+    range = layerLines[z]-layerLines[z-1];
+    lo = layerLines[z]-range/4;
+    hi = layerLines[z]+range/4;
+    wavelength = Math.floor(10+noise.get(z)*wide/5)
+    waves = 0;
+     //console.log(hi,start,lo,range)
+     var mpoint = new Point(0,start)
+     var path = new Path();
+        path.add(mpoint);
+        for (c=25;c<wide-25;c=c+wavelength){
+            if (noise.get(c,z)<.40){
+                mpoint = new Point(c,lo)
+            }else if(noise.get(c,z)>.60){
+                mpoint = new Point(c,hi)
+            } else {
+                mpoint = new Point(c,start)
+            }
+            waves = waves+1; if (waves>1){waves=0}
+            if (waves == 1){mpoint = new Point(c,lo)}
+                if (waves == 0){mpoint = new Point(c,hi)}
+            path.add(mpoint);        
+        }
+        mpoint = new Point(wide,start)
+        path.add(mpoint);
+        path.smooth();
+        mpoint = new Point(wide,high)
+        path.add(mpoint);
+        mpoint = new Point(0,high)
+        path.add(mpoint);
+        mpoint = new Point(0,start)
+        path.add(mpoint);    
+    sheet[zTo] = sheet[zTo].unite(path);
     path.remove();
     project.activeLayer.children[project.activeLayer.children.length-2].remove();
-}
+    colors[z]= waterColors[Math.floor(noise.get(z)*waterColors.length)];
+ 
+ }
 
-function circleFrame(z){
-    outsideframe = new Path.Rectangle(new Point(1,1),new Size(wide-2, high-2))
-    path = new Path.Circle(new Point(wide/2, high/2), wide/2-framewidth);
-    path2 = outsideframe.subtract(path);
-    outsideframe.remove();path.remove();
-    sheet[z] = sheet[z].unite(path2);
-    path2.remove();
+ function plains(z,zTo) {
+    if (zTo == null){zTo = z;}
+    start = layerLines[z];
+    range = layerLines[z]-layerLines[z-1];
+    lo = layerLines[z]-range/10;
+    hi = layerLines[z]+range/10;
+     //console.log(hi,start,lo,range)
+     var mpoint = new Point(0,start)
+     var path = new Path();
+        path.add(mpoint);
+        for (c=25;c<wide-25;c=c+noise.get(z)*wide/25){
+            if (noise.get(c,z)<.40){
+                mpoint = new Point(c,lo)
+            }else if(noise.get(c,z)>.60){
+                mpoint = new Point(c,hi)
+            } else {
+                mpoint = new Point(c,start)
+            }         
+            path.add(mpoint);          
+        }
+        mpoint = new Point(wide,start)
+        path.add(mpoint);
+        mpoint = new Point(wide,high)
+        path.add(mpoint);
+        mpoint = new Point(0,high)
+        path.add(mpoint);
+        mpoint = new Point(0,start)
+        path.add(mpoint);             
+    sheet[zTo] = sheet[zTo].unite(path);
+    path.remove();
     project.activeLayer.children[project.activeLayer.children.length-2].remove();
-}
+    colors[z]= plainColors[Math.floor(noise.get(z)*plainColors.length)];
+ }
 
-function waveCut(z){
-    var lines = new Path();
-    var wy=sliceLine;
-    for (wx=0;wx<wide;wx=(wx+Math.floor(noise.get(wx,wy)*100))){
-        wy=sliceLine+Math.floor(50-noise.get(wx,wy)*100)
-        points = new Point(wx,wy)
-        lines.add(points);
+
+function fields(z,zTo) {
+    if (zTo == null){zTo = z;}
+    start = layerLines[z];
+    range = layerLines[z]-layerLines[z-1];
+    lo = layerLines[z]-range/20;
+    hi = layerLines[z]+range/20;
+     //console.log(hi,start,lo,range)
+     var mpoint = new Point(0,start)
+     var path = new Path();
+        path.add(mpoint);
+        for (c=25;c<wide-25;c=c+noise.get(z)*wide/25){
+            if (noise.get(c,z)<.50){
+                mpoint = new Point(c,lo)
+            } else {
+                mpoint = new Point(c,hi)
+            }     
+            path.add(mpoint);          
+        }
+        mpoint = new Point(wide,start)
+        path.add(mpoint);
+        path.smooth();
+        mpoint = new Point(wide,high)
+        path.add(mpoint);
+        mpoint = new Point(0,high)
+        path.add(mpoint);
+        mpoint = new Point(0,start)
+        path.add(mpoint);      
+    sheet[zTo] = sheet[zTo].unite(path);
+    path.remove();
+    project.activeLayer.children[project.activeLayer.children.length-2].remove();
+    colors[z]= fieldColors[Math.floor(noise.get(z)*fieldColors.length)];
+ }
+
+
+ function sand(z,zTo) {
+    if (zTo == null){zTo = z;}
+    start = layerLines[z];
+    range = layerLines[z]-layerLines[z-1];
+    lo = layerLines[z]-range/30;
+    hi = layerLines[z]+range/30;
+     //console.log(hi,start,lo,range)
+     var mpoint = new Point(0,start)
+     var path = new Path();
+        path.add(mpoint);
+        for (c=25;c<wide-25;c=c+noise.get(z)*wide/25){
+            if (noise.get(c,z)<.40){
+                mpoint = new Point(c,lo)
+            }else if(noise.get(c,z)>.60){
+                mpoint = new Point(c,hi)
+            } else {
+                mpoint = new Point(c,start)
+            }
+         
+            path.add(mpoint);     
+        }
+        mpoint = new Point(wide,start)
+        path.add(mpoint);
+        path.smooth();
+        mpoint = new Point(wide,high)
+        path.add(mpoint);
+        mpoint = new Point(0,high)
+        path.add(mpoint);
+        mpoint = new Point(0,start)
+        path.add(mpoint);     
+    sheet[zTo] = sheet[zTo].unite(path);
+    path.remove();
+    project.activeLayer.children[project.activeLayer.children.length-2].remove();
+    colors[z]= beachColors[Math.floor(noise.get(z)*beachColors.length)];
+ }
+
+
+
+function hills(z,zTo) {
+    if (zTo == null){zTo = z;}
+    start = layerLines[z];
+    range = layerLines[z]-layerLines[z-1];
+    lo = layerLines[z]-range*2;
+    hi = layerLines[z]+range*2;
+     //console.log(hi,start,lo,range)
+     var mpoint = new Point(0,start)
+     var path = new Path();
+        path.add(mpoint);
+        for (c=25;c<wide-25;c=c+noise.get(z)*wide){
+            if (noise.get(c,z)<.5){
+                mpoint = new Point(c,lo)
+            }else if(noise.get(c,z)>.5){
+                mpoint = new Point(c,hi)
+            } else {
+                mpoint = new Point(c,start)
+            }
+         
+            path.add(mpoint);     
+        }
+        mpoint = new Point(wide,start)
+        path.add(mpoint);
+        path.smooth();
+
+        mpoint = new Point(wide,high)
+        path.add(mpoint);
+        mpoint = new Point(0,high)
+        path.add(mpoint);
+        mpoint = new Point(0,start)
+        path.add(mpoint);  
+    sheet[zTo] = sheet[zTo].unite(path);
+    path.remove();
+    project.activeLayer.children[project.activeLayer.children.length-2].remove();
+    colors[z]= hillColors[Math.floor(noise.get(z)*hillColors.length)];
+ }
+
+
+  function mountain(z,zTo) {
+    if (zTo == null){zTo = z;}
+     start = layerLines[z];
+     range = layerLines[z]-layerLines[z-1];
+    lo = layerLines[z]-range*4;
+    hi = layerLines[z]+range*4;
+    var mpoint = new Point(0, start)
+     var path = new Path();
+        path.add(mpoint);
+        for (c=25;c<wide-25;c=c+noise.get(z)*wide){
+            if (noise.get(c,z)<.40){
+                mpoint = new Point(c,lo)
+            }else if(noise.get(c,z)>.60){
+                mpoint = new Point(c,hi)
+            } else {
+                mpoint = new Point(c,start)
+            }   
+            path.add(mpoint);   
+        }
+        mpoint = new Point(wide, start)
+        path.add(mpoint);
+        mpoint = new Point(wide,high)
+        path.add(mpoint);
+        mpoint = new Point(0,high)
+        path.add(mpoint);
+    sheet[zTo] = sheet[zTo].unite(path);
+    path.remove();
+    project.activeLayer.children[project.activeLayer.children.length-2].remove();
+    colors[z]= mountainColors[Math.floor(R.random_dec()*mountainColors.length)];
+ }
+
+ function mountainTrees(z){
+    mountain(z+1,z);
+    start = layerLines[z+1];
+     range = layerLines[z+1]-layerLines[z];
+    lo = layerLines[z+1]-range*4;
+    hi = layerLines[z+1]+range*4;
+    for (t=R.random_dec()*100;t<wide-50;t=t+R.random_dec()*100+(40*z)){
+        var center = new Point(t, hi);
+        var sides = 3;
+        var radius = 5*z+50;
+        var tree = new Path.RegularPolygon(center, sides, radius);
+        //tree.scale(R.random_dec()*.8+.25, R.random_dec()+.5)
+        tree.scale(1, R.random_dec()*2+5)
+        sheet[z]=sheet[z].unite(tree);
+        tree.remove();
+        project.activeLayer.children[project.activeLayer.children.length-2].remove();
     }
-    lines.smooth()
-    lines.scale(1+noise.get(z), new Point(wide/2, sliceLine));
-    mesh = PaperOffset.offsetStroke(lines, (z+1)*gap, { cap: 'round',strokeWidth: 1 })
-    lines.remove();
-    sheet[z] = (sheet[z].subtract(mesh));
-    mesh.remove();  
-    project.activeLayer.children[project.activeLayer.children.length-2].remove();
-}
+    colors[z]= treeColors[Math.floor(R.random_dec()*treeColors.length)];
 
-function squiggleCut(z,centerline){
-    var lines = new Path();
-    var wy=centerline;
-    for (wx=0;wx<wide;wx=(wx+Math.floor(noise.get(wx/10,wy/9)*100))){
-        wy=centerline+Math.floor(150-noise.get(wx/10,wy/9)*300)
-        points = new Point(wx,wy)
-        lines.add(points);
+ }
+
+ function sandRocks(z){
+    sand(z+1,z);
+    start = layerLines[z+1];
+     range = layerLines[z+1]-layerLines[z];
+    lo = layerLines[z+1]-range*4;
+    hi = layerLines[z+1]+range*4;
+    for (t=R.random_dec()*300;t<wide-50;t=t+R.random_dec()*100+(40*z)){
+        var sides = 7
+        var center = new Point(t, start);
+        var radius = R.random_dec()*10*z+10;
+        var rock = new Path.RegularPolygon(center, sides, radius);
+        //tree.scale(R.random_dec()*.8+.25, R.random_dec()+.5)
+        //tree.scale(1, R.random_dec()*2+5)
+        sheet[z]=sheet[z].unite(rock);
+        rock.remove();
+        project.activeLayer.children[project.activeLayer.children.length-2].remove();
     }
-    lines.smooth()
-    lines.scale(1+noise.get(z), new Point(wide/2, centerline));
-    mesh = PaperOffset.offsetStroke(lines, (stacks-z)*7, { cap: 'round',strokeWidth: 1 })
-    lines.remove();
-    sheet[z] = (sheet[z].unite(mesh));
-    mesh.remove();  
+     colors[z]= rockColors[Math.floor(R.random_dec()*rockColors.length)];
+ }
+
+
+ function plainObolisks(z){
+    plains(z+1,z);
+    start = layerLines[z+1];
+     range = layerLines[z+1]-layerLines[z];
+    lo = layerLines[z+1]-range*4;
+    hi = layerLines[z+1]+range*4;
+    for (t=R.random_dec()*wide;t<wide-50;t=t+R.random_dec()*wide+(40*z)){
+        var center = new Point(t, hi);
+        var sides = 4;
+        var radius = 5*z+50;
+        var tree = new Path.RegularPolygon(center, sides, radius);
+        //tree.scale(R.random_dec()*.8+.25, R.random_dec()+.5)
+        tree.scale(.5, R.random_dec()*2+5)
+        sheet[z]=sheet[z].unite(tree);
+        tree.remove();
+        project.activeLayer.children[project.activeLayer.children.length-2].remove();
+    }
+    colors[z]= oboliskColors[Math.floor(R.random_dec()*oboliskColors.length)];
+
+ }
+
+
+ function boats(z){
+    water(z+1,z);
+    var radius = Math.floor(15+noise.get(z)*10*z);
+    xpos = Math.floor(radius*2+R.random_dec()*(wide-radius*2))
+    var center = new Point(xpos, layerLines[z+1]); 
+    var boat = new Path.Circle(center,radius);
+    var path = new Path.Rectangle(new Point(xpos-radius,layerLines[z+1]-radius*2),radius*2 )
+    boat = boat.subtract(path)
+    path.remove();
     project.activeLayer.children[project.activeLayer.children.length-2].remove();
-}
+    path = new Path.Rectangle(center,new Size(20, radius))
+    path.position.y += -radius*.75
+    path.position.x += -10
+    boat = boat.unite(path)
+    path.remove();
+    project.activeLayer.children[project.activeLayer.children.length-2].remove();
+    var sides = 3;
+    //var radius = 5*z+50;
+    var path = new Path.RegularPolygon(center, sides, radius);
+    path.position.y +=-radius*.80
+    boat = boat.unite(path)
+    path.remove();
+    project.activeLayer.children[project.activeLayer.children.length-2].remove();
+    boat.position.y += -radius/3
+    boat.rotate(15-Math.floor(R.random_dec()*30))
+    sheet[z]=sheet[z].unite(boat);
+    boat.remove();
+    project.activeLayer.children[project.activeLayer.children.length-2].remove();
+    colors[z]={"Hex":"#292831","Name":"Black"}
+ }
 
 
 

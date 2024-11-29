@@ -1,4 +1,89 @@
 //colors.js
+var sunColors = [
+    {"Hex":"#FFF35D", "Name":"Buttercup"},
+    {"Hex":"#CC9047", "Name":"Golden"},
+  ];
+  
+  var moonColors = [
+    {"Hex":"#FFF35D", "Name":"Buttercup"},
+    {"Hex":"#CED5DB", "Name":"Clapboard"},
+  ];
+  
+  var cloudColors = [
+    {"Hex":"#CED5DB", "Name":"Clapboard"},
+    {"Hex":"#0000FF", "Name":"Smooth White"},
+  ];
+  
+  var waterColors = [
+    {"Hex":"#A9D0DF", "Name":"Aqua Blue"},
+    {"Hex":"#8490A6", "Name":"Brittany Blue"},
+    {"Hex":"#4C739E", "Name":"Marine Blue"},
+    {"Hex":"#63939D", "Name":"Ocean Blue"},
+  ];
+  
+  var mountainColors = [
+    {"Hex":"#CC9047", "Name":"Golden"},
+    {"Hex":"#745042", "Name":"Burnt Sienna"},
+    {"Hex":"#8A473F", "Name":"Chili"},
+  ];
+  
+  var hillColors = [
+    {"Hex":"#01AE52", "Name":"Bright Green"},
+    {"Hex":"#447560", "Name":"Celtic"},
+    {"Hex":"#C5D785", "Name":"Pistachio"},
+    {"Hex":"#949B6F", "Name":"Valley Green"},
+  ];
+  
+  var plainColors = [
+    {"Hex":"#CC9047", "Name":"Golden"},
+    {"Hex":"#745042", "Name":"Burnt Sienna"},
+    {"Hex":"#8A473F", "Name":"Chili"},
+  ];
+  
+  
+  var fieldColors = [
+    {"Hex":"#C5D785", "Name":"Pistachio"},
+    {"Hex":"#949B6F", "Name":"Valley Green"},
+  ];
+  
+  var beachColors = [
+    {"Hex":"#FFF35D", "Name":"Buttercup"},
+    {"Hex":"#CC9047", "Name":"Golden"},
+  ];
+  
+  var rockColors = [
+    {"Hex":"#745042", "Name":"Burnt Sienna"},
+    {"Hex":"#4C4638", "Name":"Mocha"},
+    {"Hex":"#1A1A1A", "Name":"Smooth Black"},
+  ];
+  
+  var treeColors = [
+    {"Hex":"#01AE52", "Name":"Bright Green"},
+    {"Hex":"#447560", "Name":"Celtic"},
+    {"Hex":"#C5D785", "Name":"Pistachio"},
+    {"Hex":"#949B6F", "Name":"Valley Green"},
+  ];
+  
+  var oboliskColors = [
+    {"Hex":"#1A1A1A", "Name":"Smooth Black"},
+    {"Hex":"#0000FF", "Name":"Smooth White"},
+  ];
+  
+  
+  var landscapeTypes = [
+  {"id":0,"name":"Random"},
+  {"id":1,"name":"Mountain Range"},
+  {"id":2,"name":"Beach"},
+  {"id":3,"name":"Mesa"},
+  {"id":4,"name":"Foothills"},
+  {"id":5,"name":"Ocean"},
+  {"id":6,"name":"River"},
+  {"id":7,"name":"Canyons"},
+  {"id":8,"name":"Random"},
+  ]
+
+
+
 var tints = [
 {"Hex":"#FEF6E3", "Name":"Antique White"},
 {"Hex":"#A9D0DF", "Name":"Aqua Blue"},
