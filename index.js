@@ -64,24 +64,6 @@ definitions = [
         options: {options: ["1", "2", "3"]},
     },
     {
-        id: "colors",
-        name: "Max # of colors",
-        type: "number",
-        default: 2,
-        options: {
-            min: 1,
-            max: 12,
-            step: 1,
-        },  
-    },
-    {
-        id: "pallete",
-        name: "Theme",
-        type: "select",
-        default: "AllColors",
-        options: {options: colorPalettes},
-    },
-    {
         id: "framecolor",
         name: "Frame color",
         type: "select",
