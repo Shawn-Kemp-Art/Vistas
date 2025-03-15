@@ -28,6 +28,20 @@ var seed = Math.floor($fx.rand()*10000000000000000);
 var noise = new perlinNoise3d();
 noise.noiseSeed(seed);
 
+//read in query strings
+var qcolor1 = "AllColors";
+if(new URLSearchParams(window.location.search).get('c1')){qcolor1 = new URLSearchParams(window.location.search).get('c1')}; //colors1
+var qcolor2 = "None";
+if(new URLSearchParams(window.location.search).get('c2')){qcolor2 = new URLSearchParams(window.location.search).get('c2')}; //colors2
+var qcolor3 = "None";
+if(new URLSearchParams(window.location.search).get('c3')){qcolor3 = new URLSearchParams(window.location.search).get('c3')}; //colors3
+var qcolors = R.random_int(1,6);
+if(new URLSearchParams(window.location.search).get('c')){qcolors = new URLSearchParams(window.location.search).get('c')}; //number of colors
+var qsize = "2";
+if(new URLSearchParams(window.location.search).get('s')){qsize = new URLSearchParams(window.location.search).get('s')}; //size
+var qcomplexity = R.random_int(1,10);
+if(new URLSearchParams(window.location.search).get('d')){qcomplexity = new URLSearchParams(window.location.search).get('d')}; //size
+
 
 //FXparams
 
@@ -36,7 +50,7 @@ definitions = [
         id: "layers",
         name: "Layers",
         type: "number",
-        default: 16,
+        default: 14,
         options: {
             min: 6,
             max: 24,
@@ -60,15 +74,14 @@ definitions = [
         id: "size",
         name: "Size",
         type: "select",
-        default: "2",
+        default: qsize,
         options: {options: ["1", "2", "3"]},
     },
     {
         id: "framecolor",
         name: "Frame color",
         type: "select",
-        default: "White",
-        options: {options: ["Random","White","Mocha"]},
+        options: {options: ["White","Mocha"]},
     }, 
     {
         id: "matwidth",
@@ -118,18 +131,6 @@ paper.view.viewSize.height = 2400;
 
 
 var colors = []; var palette = []; 
-
-//set a apllete based theme and number of colors
-for (c=0; c<numofcolors; c=c+1){palette[c] = this[$fx.getParam('pallete')][R.random_int(0, this[$fx.getParam('pallete')].length-1)]}  
-console.log(palette);
-
-//randomly assign colors to layers
-for (c=0; c<stacks; c=c+1){colors[c] = palette[R.random_int(0, palette.length-1)];};
-
-//or alternate colors
-p=0;for (var c=0; c<stacks; c=c+1){colors[c] = palette[p];p=p+1;if(p==palette.length){p=0};}
-
-console.log(colors);
 
 if ($fx.getParam('framecolor')=="White"){colors[stacks-1]={"Hex":"#FFFFFF", "Name":"Smooth White"}};
 if ($fx.getParam('framecolor')=="Mocha"){colors[stacks-1]={"Hex":"#4C4638", "Name":"Mocha"}};
