@@ -50,7 +50,7 @@ definitions = [
         id: "layers",
         name: "Layers",
         type: "number",
-        default: 14,
+        default: 16,
         options: {
             min: 6,
             max: 24,
@@ -138,6 +138,7 @@ if ($fx.getParam('framecolor')=="Mocha"){colors[stacks-1]={"Hex":"#4C4638", "Nam
 
 var woodframe = new Path();var framegap = new Path();
 var fColor = frameColors[R.random_int(0, frameColors.length-1)];
+fColor = {"Hex":"#60513D","Name":"Walnut"};
 var frameColor = fColor.Hex;
 
 //adjust the canvas dimensions
