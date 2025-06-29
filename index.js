@@ -771,7 +771,7 @@ function floatingframe(){
         var framegroup = new Group(woodframe);
         woodframe.style = {fillColor: frameColor, strokeColor: "#1A1A1A", strokeWidth: 2*ratio,shadowColor: new Color(0,0,0,[0.5]),shadowBlur: 20,shadowOffset: new Point(10*2.2, 10*2.2)};
     } else {woodframe.removeChildren()} 
-    fileName = "Framed-"+$fx.hash;
+    //fileName = "Framed-"+$fx.hash;
 }
 
 
@@ -903,10 +903,30 @@ document.addEventListener('keypress', (event) => {
             
         }
         
-        if(event.key == "F") {
-            frameColor = prompt("Frame color(hex)", frameColor);
-            floatingframe();
-            }    
+        if(event.key == "1") {
+            frameColor = {"Hex":"#4C46380", "Name":"Black"};
+            fileName = "FramedBlack-"+$fx.hash;
+            woodframe.style = {fillColor: frameColor.Hex}
+        }
+        if(event.key == "2") {
+            frameColor = {"Hex":"#f9f9f9","Name":"White"};
+            fileName = "FramedWhite-"+$fx.hash;
+            woodframe.style = {fillColor: frameColor.Hex}
+        }
+        if(event.key == "3") {
+            frameColor = {"Hex":"#60513D","Name":"Walnut"};
+            fileName = "FramedWalnut-"+$fx.hash;
+            woodframe.style = {fillColor: frameColor.Hex}
+        }
+        if(event.key == "4") {
+            frameColor = {"Hex":"#ebd9c0","Name":"Maple"};
+            fileName = "FramedMaple-"+$fx.hash;
+            woodframe.style = {fillColor: frameColor.Hex}
+        }
+            
+        if(event.key == "V") {
+            fileName = "Vector-"+$fx.hash;
+        }  
 
 
        //Format for Lightburn
