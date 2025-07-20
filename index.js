@@ -42,6 +42,8 @@ if(new URLSearchParams(window.location.search).get('s')){qsize = new URLSearchPa
 var qcomplexity = R.random_int(1,10);
 if(new URLSearchParams(window.location.search).get('d')){qcomplexity = new URLSearchParams(window.location.search).get('d')}; //size
 
+var qorientation =R.random_int(1,2) < 2 ? "portrait" : "landscape";
+var qframecolor = R.random_int(1,3) < 1 ? "White" : R.random_int(1,3) < 2 ? "Mocha" : "Random";
 
 //FXparams
 
@@ -61,6 +63,7 @@ definitions = [
         id: "orientation",
         name: "Orientation",
         type: "select",
+        default: qorientation,    
         options: {options: ["portrait", "landscape"]},
     },
     {
@@ -81,6 +84,7 @@ definitions = [
         id: "framecolor",
         name: "Frame color",
         type: "select",
+        default: qframecolor,
         options: {options: ["White","Mocha"]},
     }, 
     {
