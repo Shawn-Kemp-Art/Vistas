@@ -99,8 +99,7 @@ var tints = [
 {"Hex":"#8A473F", "Name":"Chili"},
 {"Hex":"#CED5DB", "Name":"Clapboard"},
 {"Hex":"#CC9047", "Name":"Golden"},
-{"Hex":"#FBCBD7", "Name":"Hollyhock"},
-{"Hex":"#EF4C84", "Name":"Hot Pink"},
+{"Hex":"#FBCBD7", "Name":"Hollyhock"}
 {"Hex":"#70869D", "Name":"Lavender"},
 {"Hex":"#4C739E", "Name":"Marine Blue"},
 {"Hex":"#4C4638", "Name":"Mocha"},
@@ -128,8 +127,7 @@ var AllColors = [
     {"Hex":"#8A473F", "Name":"Chili"},
     {"Hex":"#CED5DB", "Name":"Clapboard"},
     {"Hex":"#CC9047", "Name":"Golden"},
-    {"Hex":"#FBCBD7", "Name":"Hollyhock"},
-    {"Hex":"#EF4C84", "Name":"Hot Pink"},
+    {"Hex":"#FBCBD7", "Name":"Hollyhock"}
     {"Hex":"#70869D", "Name":"Lavender"},
     {"Hex":"#4C739E", "Name":"Marine Blue"},
     {"Hex":"#4C4638", "Name":"Mocha"},
