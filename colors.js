@@ -31,7 +31,6 @@ var sunColors = [
     {"Hex":"#01AE52", "Name":"Bright Green"},
     {"Hex":"#447560", "Name":"Celtic"},
     {"Hex":"#C5D785", "Name":"Pistachio"},
-    {"Hex":"#949B6F", "Name":"Valley Green"},
   ];
   
   var plainColors = [
@@ -43,7 +42,6 @@ var sunColors = [
   
   var fieldColors = [
     {"Hex":"#C5D785", "Name":"Pistachio"},
-    {"Hex":"#949B6F", "Name":"Valley Green"},
   ];
   
   var beachColors = [
@@ -61,7 +59,6 @@ var sunColors = [
     {"Hex":"#01AE52", "Name":"Bright Green"},
     {"Hex":"#447560", "Name":"Celtic"},
     {"Hex":"#C5D785", "Name":"Pistachio"},
-    {"Hex":"#949B6F", "Name":"Valley Green"},
   ];
   
   var oboliskColors = [
